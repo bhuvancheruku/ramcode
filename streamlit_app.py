@@ -1,6 +1,5 @@
 import streamlit as st
-import pandas as pd
-import pymysql
+import mysql.connector
 from datetime import datetime
 
 st.set_page_config(page_title='ATM Application', page_icon=':bank:')
@@ -27,7 +26,7 @@ def signup():
 def view_balance():
     font = "<font size='3' color='black'>"
     output = ""
-    con = pymysql.connect(host='127.0.0.1', port=3306, user='root', password='', database='atm', charset='utf8')
+    con = mysql.connector.connect(host='127.0.0.1', port=3306, user='root', password='', database='atm')
     with con:
         cur = con.cursor()
         cur.execute(f"select * FROM transaction where username='{uname}'")
@@ -46,7 +45,7 @@ def login_action():
     password = st.text_input("Password", type="password")
     data = st.file_uploader("Upload Fingerprint Image", type=["png"])
     index = 0
-    con = pymysql.connect(host='127.0.0.1', port=3306, user='root', password='', database='atm', charset='utf8')
+    con = mysql.connector.connect(host='127.0.0.1', port=3306, user='root', password='', database='atm')
     with con:
         cur = con.cursor()
         cur.execute("select * FROM users")
@@ -67,7 +66,7 @@ def login_action():
 
 def get_amount(user):
     amount = 0
-    con = pymysql.connect(host='127.0.0.1', port=3306, user='root', password='', database='atm', charset='utf8')
+    con = mysql.connector.connect(host='127.0.0.1', port=3306, user='root', password='', database='atm')
     with con:
         cur = con.cursor()
         cur.execute("select * FROM transaction")
@@ -88,7 +87,7 @@ def withdraw_action():
         total = total - withdraw
         timestamp = datetime.now().strftime('%Y-%m-%d %H:%M:%S')
         student_sql_query = f"update transaction set transaction_amount='{amount}',transaction_type='Withdrawl',transaction_date='{timestamp}',total_balance='{total}' where username='{user}'"
-        db_connection = pymysql.connect(host='127.0.0.1', port=3306, user='root', password='', database='atm', charset='utf8')
+        db_connection = mysql.connector.connect(host='127.0.0.1', port=3306, user='root', password='', database='atm')
         db_cursor = db_connection.cursor()
         db_cursor.execute(student_sql_query)
         db_connection.commit()
@@ -107,7 +106,7 @@ def deposit_action():
         total = total + float(amount)
         timestamp = datetime.now().strftime('%Y-%m-%d %H:%M:%S')
         student_sql_query = f"INSERT INTO transaction(username,transaction_amount,transaction_type,transaction_date,total_balance) VALUES('{user}','{amount}','Deposit','{timestamp}','{total}')"
-        db_connection = pymysql.connect(host='127.0.0.1', port=3306, user='root', password='', database='atm', charset='utf8')
+        db_connection = mysql.connector.connect(host='127.0.0.1', port=3306, user='root', password='', database='atm')
         db_cursor = db_connection.cursor()
         db_cursor.execute(student_sql_query)
         db_connection.commit()
@@ -117,7 +116,7 @@ def deposit_action():
         total = total + float(amount)
         timestamp = datetime.now().strftime('%Y-%m-%d %H:%M:%S')
         student_sql_query = f"update transaction set transaction_amount='{amount}',transaction_type='Deposit',transaction_date='{timestamp}',total_balance='{total}' where username='{user}'"
-        db_connection = pymysql.connect(host='127.0.0.1', port=3306, user='root', password='', database='atm', charset='utf8')
+        db_connection = mysql.connector.connect(host='127.0.0.1', port=3306, user='root', password='', database='atm')
         db_cursor = db_connection.cursor()
         db_cursor.execute(student_sql_query)
         db_connection.commit()
@@ -134,7 +133,7 @@ def signup_action():
     gender = st.radio("Gender", ["Male", "Female", "Other"])
     data = st.file_uploader("Upload Fingerprint Image", type=["png"])
     status = "none"
-    con = pymysql.connect(host='127.0.0.1', port=3306, user='root', password='', database='atm', charset='utf8')
+    con = mysql.connector.connect(host='127.0.0.1', port=3306, user='root', password='', database='atm')
     with con:
         cur = con.cursor()
         cur.execute("select * FROM users")
@@ -144,7 +143,7 @@ def signup_action():
                 status = user + " Username already exists"
                 break
     if status == 'none':
-        db_connection = pymysql.connect(host='127.0.0.1', port=3306, user='root', password='', database='atm', charset='utf8')
+        db_connection = mysql.connector.connect(host='127.0.0.1', port=3306, user='root', password='', database='atm')
         db_cursor = db_connection.cursor()
         student_sql_query = f"INSERT INTO users(username,password,contact_no,emailid,address,gender) VALUES('{user}','{password}','{phone}','{email}','{address}','{gender}')"
         db_cursor.execute(student_sql_query)
@@ -157,23 +156,4 @@ def signup_action():
     st.success(status)
 
 def logout():
-    st.write("Logout Page")
-
-# Streamlit App
-page = st.sidebar.radio("Navigation", ["Home", "Login", "Signup", "Deposit", "Withdraw", "View Balance", "Logout"])
-
-if page == "Home":
-    index()
-elif page == "Login":
-    login_action()
-elif page == "Signup":
-    signup_action()
-elif page == "Deposit":
-    deposit()
-elif page == "Withdraw":
-    withdraw_action()
-elif page == "View Balance":
-    view_balance()
-elif page == "Logout":
-    logout()
-
+    st.write("Logout Page
