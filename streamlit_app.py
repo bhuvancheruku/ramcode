@@ -147,4 +147,33 @@ def signup_action():
         db_connection = pymysql.connect(host='127.0.0.1', port=3306, user='root', password='', database='atm', charset='utf8')
         db_cursor = db_connection.cursor()
         student_sql_query = f"INSERT INTO users(username,password,contact_no,emailid,address,gender) VALUES('{user}','{password}','{phone}','{email}','{address}','{gender}')"
-        db_cursor.execute(student_sql
+        db_cursor.execute(student_sql_query)
+        db_connection.commit()
+        if db_cursor.rowcount == 1:
+            out_file = open(f"C:/Users/marut/OneDrive/Desktop/FingerprintATM/static/users/{user}.png", "wb")
+            out_file.write(data)
+            out_file.close()
+            status = 'Signup process completed'
+    st.success(status)
+
+def logout():
+    st.write("Logout Page")
+
+# Streamlit App
+page = st.sidebar.radio("Navigation", ["Home", "Login", "Signup", "Deposit", "Withdraw", "View Balance", "Logout"])
+
+if page == "Home":
+    index()
+elif page == "Login":
+    login_action()
+elif page == "Signup":
+    signup_action()
+elif page == "Deposit":
+    deposit()
+elif page == "Withdraw":
+    withdraw_action()
+elif page == "View Balance":
+    view_balance()
+elif page == "Logout":
+    logout()
+
