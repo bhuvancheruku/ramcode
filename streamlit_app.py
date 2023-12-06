@@ -156,4 +156,4 @@ def signup_action():
     st.success(status)
 
 def logout():
-    st.write("Logout Page
+    st.write("Logout Page")
